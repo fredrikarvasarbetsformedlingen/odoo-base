@@ -108,11 +108,19 @@ class ResPartner(models.Model):
     name_com_reg_num = fields.Char(compute="_compute_name_com_reg_num", store=True)
 
     @api.one
-    def combine_social_sec_nr_age(self): #How to do the popup???
+    def combine_social_sec_nr_age(self): 
         if self.company_registry != False:
             self.social_sec_nr_age = _("%s (%s years old)") % (self.company_registry, self.age)
         else:
             self.social_sec_nr_age = ""
+    @api.one
+    @api.constrains('company_registry')
+    def check_double_social_sec_nr(self):
+        rec = self.env['res.partner'].search([('company_registry','=',self.company_registry)])
+        if rec:
+            raise ValidationError(_("Two people can't have the same social securiy number"))
+
+            
     @api.one
     def combine_state_name_code(self):
         self.state_name_code = "%s %s" % (self.state_id.name, self.state_id.code)
