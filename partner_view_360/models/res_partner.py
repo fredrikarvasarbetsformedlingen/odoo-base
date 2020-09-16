@@ -40,7 +40,7 @@ class ResPartner(models.Model):
     age = fields.Char(string="Age", compute="calculate_age")
     company_registry = fields.Char(
         string='Organization number', help="organization number")
-    social_sec_nr = fields.Char(string="Social security number", related="company_registry")
+    social_sec_nr = fields.Char(string="Social security number", compute="set_social_sec_nr")
     social_sec_nr_age = fields.Char(string="Social security number", compute="combine_social_sec_nr_age")
     cfar = fields.Char(string='CFAR', help="CFAR number")
     customer_id = fields.Char(string='Customer number', help="Customer number")
@@ -113,15 +113,14 @@ class ResPartner(models.Model):
             self.social_sec_nr_age = _("%s (%s years old)") % (self.company_registry, self.age)
         else:
             self.social_sec_nr_age = ""
-    @api.one
-    @api.constrains('company_registry')
-    def check_double_social_sec_nr(self):
-        rec = self.env['res.partner'].search([('company_registry','=',self.company_registry)])
-        if rec:
-            self.company_registry = ""
-            raise ValidationError(_("Two people can't have the same social securiy number"))
+    
+    _sql_constraints = [('social_sec_nr', 'unique(social_sec_nr)',_('Social security number must be unique'))]
 
-            
+    @api.one
+    def set_social_sec_nr(self):
+        if self.is_jobseeker:
+            self.social_sec_nr = self.company_registry
+    
     @api.one
     def combine_state_name_code(self):
         self.state_name_code = "%s %s" % (self.state_id.name, self.state_id.code)
