@@ -118,6 +118,7 @@ class ResPartner(models.Model):
     def check_double_social_sec_nr(self):
         rec = self.env['res.partner'].search([('company_registry','=',self.company_registry)])
         if rec:
+            self.company_registry = ""
             raise ValidationError(_("Two people can't have the same social securiy number"))
 
             
