@@ -67,7 +67,7 @@
                   <input type="hidden" name="kontaktid" t-att-value="kontaktid" />
                   <input type="hidden" name="bankid_init" t-att-value="True" />
                 </div>
-                <div class="clearfix oe_login_buttons text-center mb-1 pt-3">
+                <div class="clearfix oe_login_buttons text-center mb-1 pt-3" t-if="bankid_check">
                   <button type="submit" name="bankid" class="btn btn-primary btn-block">BankID</button>
                 </div>
               </form>
@@ -82,8 +82,11 @@
                   <input type="hidden" name="bankid_soap" t-att-value="bankid_soap" />
                   <input type="hidden" name="bankid_res" t-att-value="bankid_res" />
                 </div>
-                <div class="clearfix oe_login_buttons text-center mb-1 pt-3">
+                <div class="clearfix oe_login_buttons text-center mb-1 pt-3" t-if="bankid_check">
                   <button type="submit" class="btn btn-primary btn-block">Screenpop</button>
+                </div>
+                <div class="clearfix oe_login_buttons text-center mb-1 pt-3" t-if="not bankid_check">
+                  <span  class="btn btn-primary btn-block">Can't Screenpop, no bankid identification done</span>
                 </div>
               </form>
             </div>

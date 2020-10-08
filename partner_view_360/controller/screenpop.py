@@ -113,6 +113,9 @@ class WebsiteScreenpop(http.Controller):
         
         P92 första planeringssamtal
         """
+        
+        
+        
         message = _('You have to initiate BankID-identification') 
         bankid = res = None       
         pnr = post.get('personnummer', '')
@@ -133,6 +136,7 @@ class WebsiteScreenpop(http.Controller):
                     'kontaktid': post.get('kontaktid'),
                     'bankid_soap': bankid,
                     'bankid_res': res,
+                    'bankid_check': request.env['ir.config_parameter'].sudo().get_param('partner_view_360.bankid_check', False),
                     })
         
         
