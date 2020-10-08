@@ -113,7 +113,7 @@ class AsokResPartnerListener(stomp.ConnectionListener):
         self.__conn.ack(headers["message-id"])
     
     def on_disconnected(self):
-        _logger.waring('Asok MQ Listener disconnected from MQ - Tring to reconnect')
+        _logger.warning('Asok MQ Listener disconnected from MQ - Tring to reconnect')
         connect_and_subscribe(self.__conn, self.__user, self.__pwd, self.__target, self.__clientid)
 
     def on_connecting(self, host_and_port):
@@ -199,7 +199,7 @@ class STOMResPartnerListener(stomp.ConnectionListener):
         self.__conn.ack(headers["message-id"])
     
     def on_disconnected(self):
-        _logger.waring('STOM MQ Listener disconnected from MQ - Tring to reconnect')
+        _logger.warning('STOM MQ Listener disconnected from MQ - Tring to reconnect')
         connect_and_subscribe(self.__conn, self.__user, self.__pwd, self.__target, self.__clientid)
 
     def on_connecting(self, host_and_port):
@@ -257,7 +257,6 @@ class ResPartner(models.Model):
         respartnerlsnr = AsokResPartnerListener(self.env, mqconn, usr, pwd, target, 4)
         mqconn.set_listener('', respartnerlsnr)
         
-
         try:
             connect_and_subscribe(
                 mqconn,
@@ -280,9 +279,15 @@ class ResPartner(models.Model):
                     _logger.debug("Asok MQ Listener - rask_controller: %s" % msg)
                     self.env['res.partner'].rask_controller(customer_id, social_security_number, former_social_security_number, message_type)
 
+                self.env.cr.commit()
                 respartnerlsnr.clear_list()
-                mqconn.subscribe(target)
-                counter -= 1
+                cronstop = self.env['ir.config_parameter'].get_param('partner_mq_ipf.cronstop', '0')
+
+                if cronstop == '0':
+                    mqconn.subscribe(target)
+                    counter -= 1
+                else:
+                    counter = 0
                 
         finally:
             
@@ -329,10 +334,16 @@ class ResPartner(models.Model):
                     _logger.debug("STOM MQ Listener - send_to_stom_track: %s" % msg)
                     self.env['res.partner'].send_to_stom_track(msg)
 
+                self.env.cr.commit()
                 respartnerlsnr.clear_list()
-                mqconn.subscribe(target)
-                counter -= 1 
-                
+                cronstop = self.env['ir.config_parameter'].get_param('partner_mq_ipf.cronstop', '0')
+
+                if cronstop == '0':
+                    mqconn.subscribe(target)
+                    counter -= 1
+                else:
+                    counter = 0
+
         finally:
             
             time.sleep(1)

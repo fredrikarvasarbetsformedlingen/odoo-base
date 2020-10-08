@@ -45,7 +45,9 @@ v12.0.0.1.9 AFC-816 Changed reload window to partern_360_view.\n
         'res_ssyk',
         'res_sni',
         'partner_fax',
-        'res_drivers_license'
+        'hr_office',
+        'af_security',
+        'res_drivers_license',
     ],
     'data': [
         'views/res_partner_template.xml',
@@ -53,6 +55,8 @@ v12.0.0.1.9 AFC-816 Changed reload window to partern_360_view.\n
         #'wizard/res_partner_search_wizard.xml',
         #'security/ir.model.access.csv',
         "data/res.country.state.csv",
+        "data/res.partner.skat.csv",
+        "security/ir.model.access.csv"
     ],
     'demo': [
         "data/jobseekers/res.partner.csv",
