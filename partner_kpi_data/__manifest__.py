@@ -16,11 +16,11 @@ AFC-1788 - added new demo-data and fixed invisible tab for individuals\n
         'partner_view_360'
     ],
     'data': [
-	'views/res_partner_view.xml',
+        'views/res_partner_view.xml',
         'security/ir.model.access.csv'
         ],
     'demo': [
-	'data/res.partner.kpi.csv'
+        'data/res.partner.kpi.csv'
         ],
 
     'application': False,
